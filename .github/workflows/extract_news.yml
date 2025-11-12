@@ -3,18 +3,20 @@ name: Extract News
 on:
   schedule:
     - cron: '5 2-8 * * 1-5'  # 2:05-8:05 UTC = 9:05-15:05 VN (GMT+7), Mon-Fri
-  workflow_dispatch: 
+  workflow_dispatch:  # Cho phép chạy thủ công
 
 jobs:
   extract-news:
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    permissions:
+      contents: write
     
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          persist-credentials: true
+          token: ${{ secrets.GITHUB_TOKEN }}
           fetch-depth: 0
 
       - name: Set up Python
@@ -32,7 +34,7 @@ jobs:
           NEWS_URL: ${{ secrets.NEWS_URL }}
         run: |
           if [ -z "$NEWS_URL" ]; then
-            echo "NEWS_URL không có, bỏ qua bước download"
+            echo "⚠ NEWS_URL không được cấu hình, bỏ qua bước download"
             echo "Tạo file rỗng để script có thể chạy"
             touch y
           else
@@ -49,17 +51,26 @@ jobs:
       - name: Commit and push if there are changes
         if: always()
         run: |
-          git config --local user.email "longhoangquoc0402@gmail.com"
-          git config --local user.name "todayishql"
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
           
-          # Chỉ commit latest.txt (new.txt là file tạm)
-          if [ -f latest.txt ] && [ -n "$(git status --porcelain latest.txt)" ]; then
+          # Kiểm tra xem có thay đổi không
+          git status
+          
+          # Thêm latest.txt vào staging
+          if [ -f latest.txt ]; then
             git add latest.txt
-            git commit -m "Update news: $(date +'%Y-%m-%d %H:%M:%S UTC')" || exit 0
-            git push || exit 0
-            echo "Comitted"
+            
+            # Kiểm tra xem có thay đổi để commit không
+            if [ -n "$(git diff --staged --name-only)" ]; then
+              git commit -m "Update news: $(date -u +'%Y-%m-%d %H:%M:%S UTC')" || true
+              git push origin HEAD:${{ github.ref }} || true
+              echo "✓ Đã commit và push thay đổi"
+            else
+              echo "✓ Không có thay đổi để commit"
+            fi
           else
-            echo "Nothing to commit"
+            echo "⚠ File latest.txt không tồn tại"
           fi
 
       - name: Cleanup
