@@ -1,0 +1,1 @@
+# vht__mainpage_new_events_alert__daily
