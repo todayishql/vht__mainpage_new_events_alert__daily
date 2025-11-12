@@ -63,7 +63,7 @@ jobs:
             
             # Kiểm tra xem có thay đổi để commit không
             if [ -n "$(git diff --staged --name-only)" ]; then
-              git commit -m "Update news: $(date -u +'%Y-%m-%d %H:%M:%S UTC')" || true
+              git commit -m "Auto-commit - $(date -u +'%Y-%m-%d %H:%M:%S UTC')" || true
               git push origin HEAD:${{ github.ref }} || true
               echo "✓ Đã commit và push thay đổi"
             else
