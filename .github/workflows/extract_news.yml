@@ -2,7 +2,7 @@ name: Extract News
 
 on:
   schedule:
-    - cron: '5 2-8 * * 1-5'  # 2:05-8:05 UTC = 9:05-15:05 VN (GMT+7), Mon-Fri
+    - cron: '35 1-7 * * 1-5'  # 1:35-7:35 UTC = 8:35-14:35 VN (GMT+7), Mon-Fri (github delay 35')
   workflow_dispatch:  # Cho phép chạy thủ công
 
 jobs:
