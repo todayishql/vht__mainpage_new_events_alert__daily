@@ -51,8 +51,8 @@ jobs:
       - name: Commit and push if there are changes
         if: always()
         run: |
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
+          git config --local user.email "longhoangquoc0402@gmail.com"
+          git config --local user.name "todayishql"
           
           # Kiểm tra xem có thay đổi không
           git status
