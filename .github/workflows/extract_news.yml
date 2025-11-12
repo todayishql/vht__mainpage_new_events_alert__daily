@@ -49,7 +49,7 @@ jobs:
       - name: Commit and push if there are changes
         if: always()
         run: |
-          git config --local user.email "longhoangquoc0402@github.com"
+          git config --local user.email "longhoangquoc0402@gmail.com"
           git config --local user.name "todayishql"
           
           # Chỉ commit latest.txt (new.txt là file tạm)
